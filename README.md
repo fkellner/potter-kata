@@ -21,36 +21,20 @@ title: Bookstore
 ---
 classDiagram
   class ShoppingBasket {
-    getPrice() : int (cents)
+    getPriceInCents() : int
   }
 
-  class Item {
-    <<interface>>
-    getPrice() : int (cents)
-  }
-  ShoppingBasket "*" o-- "*" Item : contains (amount)
-
-  class Offer {
-    <<interface>>
-    addBook(Book) : boolean
-    getBooks() : Book[]
-  }
-  Item <|-- Offer
-
-  class PotterOffer {
-  }
-  Offer <|-- PotterOffer
-  
   class Book {
     isbn : string
     title : string
+    getPriceInCents() : int
   }
-  Item <|-- Book
-  Offer "*" o-- "*" Book : contains (amount)
-  
-  class Series {
-    name: string
+  ShoppingBasket "*" o-- "*" Book : contains (amount)
+
+  class Offer {
+    addBook(Book) : boolean
+    getPriceInCents() : int
   }
-  Book "1" o-- "*" Series : is part of
+
   
 ```
