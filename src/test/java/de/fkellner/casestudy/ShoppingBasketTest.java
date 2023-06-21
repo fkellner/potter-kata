@@ -3,6 +3,7 @@ package de.fkellner.casestudy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,33 +26,32 @@ public class ShoppingBasketTest
      */
     @Test
     public void basicDiscounts() {
-        ShoppingBasket basket = new ShoppingBasket(new Book[]{availableBooks[0]});
-        ShoppingBasket.printHelp();
+        ShoppingBasket basket = new ShoppingBasket(Arrays.asList(availableBooks[0]));
 
         assertEquals("1 Book: No Discount", 800, basket.getPriceInCents() );
 
-        basket.addBook(availableBooks[1]);
+        basket.addItem(availableBooks[1]);
         assertEquals("2 Books: 5% Discount", 1600 - 80, basket.getPriceInCents() );
 
-        basket.addBook(availableBooks[2]);
+        basket.addItem(availableBooks[2]);
         assertEquals("3 Books: 10% Discount", 2400 - 240, basket.getPriceInCents() );
 
-        basket.addBook(availableBooks[3]);
+        basket.addItem(availableBooks[3]);
         assertEquals("4 Books: 20% Discount", 3200 - 640, basket.getPriceInCents() );
 
-        basket.addBook(availableBooks[4]);
+        basket.addItem(availableBooks[4]);
         assertEquals("5 Books: 25% Discount", 4000 - 1000, basket.getPriceInCents() );
     }
 
     @Test
     public void givenExample() {
-        ShoppingBasket basket = new ShoppingBasket(new Book[]{
+        ShoppingBasket basket = new ShoppingBasket(Arrays.asList(
             availableBooks[0], availableBooks[0],
             availableBooks[1], availableBooks[1],
             availableBooks[2], availableBooks[2],
             availableBooks[3],
             availableBooks[4]
-        });
+        ));
 
         assertEquals("Test example: Two sets of four are best", (3200 - 640) * 2, basket.getPriceInCents() );
 
@@ -63,25 +63,30 @@ public class ShoppingBasketTest
         final int NUM_TRIES = 100000;
         final int MAX_BASKETS = 16;
 
+        long start = System.currentTimeMillis();
         for(int i = 0; i < NUM_TRIES; i++) {
             int numBaskets = (int) Math.ceil(Math.random() * MAX_BASKETS);
-            List<Book> allBooks = new LinkedList<Book>();
+            List<Item> allBooks = new LinkedList<Item>();
             int maxPrice = 0;
             String dist = "";
             for(int j = 0; j < numBaskets; j++) {
-                ShoppingBasket basket = new ShoppingBasket(new Book[]{});
+                ShoppingBasket basket = new ShoppingBasket();
                 int size = 0;
                 for(int b = 0; b < Math.random() * availableBooks.length; b++) {
                     allBooks.add(availableBooks[b]);
-                    basket.addBook(availableBooks[b]);
+                    basket.addItem(availableBooks[b]);
                     size++;
                 }
                 dist += dist == "" ? size : "," + size;
                 maxPrice += basket.getPriceInCents();
             }
-            int bestPrice = new ShoppingBasket(allBooks.toArray(new Book[]{})).getPriceInCents();
+            int bestPrice = new ShoppingBasket(allBooks).getPriceInCents();
             assertTrue("Best price " + bestPrice + " for given books is as least as good as price " + maxPrice + " for distribution: " + dist, bestPrice <= maxPrice );
         }
+        long end = System.currentTimeMillis();
+        long time = end - start;
+        double avg = (double) time / NUM_TRIES;
+        System.out.println("Fuzzing " + NUM_TRIES + " took " + time + "ms (avg: " + ((float)(int)(avg * 100) / 100) + "ms)");
     }
 
 }
