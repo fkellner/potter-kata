@@ -75,6 +75,8 @@ public class ShoppingBasketTest
                 maxPrice += basket.getPriceInCents();
             }
             int bestPrice = new ShoppingBasket(allBooks).getPriceInCents();
+            // basic idea: we should at least sometimes hit an optimal distribution
+            // otherwise, the implemented distribution should at least not be worse than the given one
             assertTrue("Best price " + bestPrice + " for given books is as least as good as price " + maxPrice + " for distribution: " + dist, bestPrice <= maxPrice );
         }
         long end = System.currentTimeMillis();

@@ -45,7 +45,7 @@ public class Offer implements Item {
         return (int)(price * (1.0f - discount));
     }
 
-    public float getDiscount() {
+    private float getDiscount() {
         switch(books.size()) {
             case 0:
             case 1:
@@ -62,10 +62,6 @@ public class Offer implements Item {
         }
     }
 
-    public int getSize() {
-        return books.size();
-    }
-
     @Override
     public String toString() {
         String desc = "" + (getDiscount() * 100) + "% discount: only " + (getPriceInCents() / 100) + "€";
@@ -75,7 +71,12 @@ public class Offer implements Item {
         return desc;
     }
 
-    public static List<Item> apply(List<Item> items) {
+    /**
+     * Join items as favourably into Offer items as possible.
+     * @param items List of items without considering the offer (will not be modified)
+     * @return a new List containing items in the cheapest constellation
+     */
+    public static List<Item> apply(final List<Item> items) {
         // ### extract all items to which the offer applies
         List<Book> potterBooks = new LinkedList<Book>();
         List<Item> result = new LinkedList<Item>();
