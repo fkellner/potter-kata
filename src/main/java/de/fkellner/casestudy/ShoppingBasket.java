@@ -1,11 +1,11 @@
 package de.fkellner.casestudy;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class ShoppingBasket {
     private List<Book> books;
@@ -36,6 +36,7 @@ public class ShoppingBasket {
         }
         // brute-force this recursively
         Integer[] counts = amounts.values().toArray(new Integer[]{});
+        Arrays.sort(counts, Collections.reverseOrder()); // seems to help a little bit
         int[] c = new int[counts.length];
         for(int i = 0; i < c.length; i++) {
             c[i] = counts[i];
@@ -55,20 +56,14 @@ public class ShoppingBasket {
         if(leftEls == 0) {
             // take one element, leave rest
             int curr = amounts[0];
-            int[] remaining = new int[amounts.length - 1];
-            for(int i = 0; i < remaining.length; i++) {
-                remaining[i] = amounts[i + 1];
-            }
+            int[] remaining = Arrays.copyOfRange(amounts, 1, amounts.length);
             return bestPrice(sets, 0, curr, remaining);
         }
         leftEls--;
         int best = Integer.MAX_VALUE;        
         // try all possibilities to distribute it
         for(int i = pos; i < sets.length - leftEls; i++) {
-            int[] newSet = new int[sets.length];
-            for(int s = 0; s < sets.length; s++) {
-                newSet[s] = sets[s];
-            }
+            int[] newSet = Arrays.copyOf(sets, sets.length);
             newSet[i]++;
             int price = bestPrice(newSet, i + 1, leftEls, amounts);
             if(price < best) best = price;
