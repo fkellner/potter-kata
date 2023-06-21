@@ -79,7 +79,7 @@ public class ShoppingBasketTest
                 maxPrice += basket.getPriceInCents();
             }
             int bestPrice = new ShoppingBasket(allBooks.toArray(new Book[]{})).getPriceInCents();
-            assertTrue("Best price for given books is as least as good as distribution: " + dist, bestPrice < maxPrice );
+            assertTrue("Best price " + bestPrice + " for given books is as least as good price " + maxPrice + " for distribution: " + dist, bestPrice <= maxPrice );
         }
     }
 

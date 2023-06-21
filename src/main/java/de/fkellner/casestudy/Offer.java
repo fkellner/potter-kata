@@ -46,4 +46,8 @@ public class Offer {
         }
         return (int)Math.floor(price * (1.0f - discount));
     }
+
+    public int getSize() {
+        return books.size();
+    }
 }
