@@ -3,9 +3,11 @@ package de.fkellner.casestudy;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ShoppingBasket {
     private List<Book> books;
@@ -29,46 +31,40 @@ public class ShoppingBasket {
         for(int v : amounts.values()) {
             if (v > minSets) minSets = v;
         }
-
-        int[] sets = new int[minSets];
+        // new heuristic: pack as dense as possible, then combine all 5 and 3 high stacks to 4 - 4
+        List<Set<String>> sets = new LinkedList<Set<String>>();
         for(int i = 0; i < minSets; i++) {
-            sets[i] = 0;
+            sets.add(new HashSet<String>());
         }
-        // brute-force this recursively
-        Integer[] counts = amounts.values().toArray(new Integer[]{});
-        Arrays.sort(counts, Collections.reverseOrder()); // seems to help a little bit
-        int[] c = new int[counts.length];
-        for(int i = 0; i < c.length; i++) {
-            c[i] = counts[i];
-        }
-        return bestPrice(sets, 0, 0, c);
-
-    }
-    private int bestPrice(int[] sets, int pos, int leftEls, int[] amounts) {
-        if(leftEls == 0 && amounts.length == 0) {
-            // we are done, calculate price
-            int sum = 0;
-            for(int i = 0; i < sets.length; i++) {
-                sum += getDiscountedPrice(sets[i]);
+        // pack as densely as possible
+        amounts.forEach((isbn, amount) -> {
+            for(int i = 0; i < amount; i++) {
+                sets.get(i).add(isbn);
             }
-            return sum;
+        });
+
+        // combine size 3 and 5 stacks where possible
+        for(int i = 0; i < sets.size(); i++) {
+            Set<String> curr = sets.get(i);
+            if(curr.size() < 5) break;
+            for(int j = i + 1; j < sets.size(); j++) {
+                Set<String> smaller = sets.get(j);
+                if(smaller.size() > 3) continue;
+                if(smaller.size() < 3) break;
+                Set<String> intersection = new HashSet<String>(curr);
+                intersection.removeAll(smaller);
+                String transfer = intersection.iterator().next();
+                curr.remove(transfer);
+                smaller.add(transfer);
+                break;
+            }
         }
-        if(leftEls == 0) {
-            // take one element, leave rest
-            int curr = amounts[0];
-            int[] remaining = Arrays.copyOfRange(amounts, 1, amounts.length);
-            return bestPrice(sets, 0, curr, remaining);
+        int sum = 0;
+        for(Set<String> set: sets) {
+            sum += getDiscountedPrice(set.size());
         }
-        leftEls--;
-        int best = Integer.MAX_VALUE;        
-        // try all possibilities to distribute it
-        for(int i = pos; i < sets.length - leftEls; i++) {
-            int[] newSet = Arrays.copyOf(sets, sets.length);
-            newSet[i]++;
-            int price = bestPrice(newSet, i + 1, leftEls, amounts);
-            if(price < best) best = price;
-        }
-        return best;
+        return sum;
+
     }
 
     private static int getDiscountedPrice(int numBooks) {
@@ -97,5 +93,19 @@ public class ShoppingBasket {
 
     public void addBook(Book book) {
         this.books.add(book);
+    }
+
+    public static void printHelp() {
+        // debugging
+        System.out.println("-----------------");
+        for(int i = 2; i <= 10; i++) {
+            System.out.println("## Distributing " + i + " to 2 stacks:");
+            for(int s1 = i - 5; s1 < i && s1 < 5; s1++) {
+                int s2 = i - s1;
+                int price = getDiscountedPrice(s1) + getDiscountedPrice(s2);
+                System.out.println(s1 + " and " + s2 + ": " + price);
+            }
+        }
+        System.out.println("-----------------");
     }
 }

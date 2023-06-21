@@ -10,7 +10,7 @@
 
   <name>potter-kata</name>
   <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <url>https://github.com/fkellner/potter-kata/</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -51,6 +51,13 @@
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <version>3.0.2</version>
+          <configuration>
+              <archive>
+                  <manifest>
+                      <mainClass>de.fkellner.casestudy.App</mainClass>
+                  </manifest>
+              </archive>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>
