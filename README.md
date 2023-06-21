@@ -10,9 +10,47 @@ object oriented programming which can be found in [`problem.md`](./problem.md).
 
 To run the tests, execute `mvn test` in the project root.
 
-For editing the source of the embedded UML diagram, I recommend using [Umbrello](https://apps.kde.org/umbrello/)
-or any other software that can handle `*.xmi` files.
+## Data Model
 
-## Assumptions
+This data model assumes that the store may sell other books than those included in the
+Wizard Series, and that there may be other Offers in the future. 
 
-TODO: document assumptions made while modelling the problem
+```mermaid
+---
+title: Bookstore
+---
+classDiagram
+  class ShoppingBasket {
+    getPrice() : int (cents)
+  }
+
+  class Item {
+    <<interface>>
+    getPrice() : int (cents)
+  }
+  ShoppingBasket "*" o-- "*" Item : contains (amount)
+
+  class Offer {
+    <<interface>>
+    addBook(Book) : boolean
+    getBooks() : Book[]
+  }
+  Item <|-- Offer
+
+  class PotterOffer {
+  }
+  Offer <|-- PotterOffer
+  
+  class Book {
+    isbn : string
+    title : string
+  }
+  Item <|-- Book
+  Offer "*" o-- "*" Book : contains (amount)
+  
+  class Series {
+    name: string
+  }
+  Book "1" o-- "*" Series : is part of
+  
+```
