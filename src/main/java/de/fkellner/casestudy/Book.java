@@ -38,4 +38,25 @@ public class Book implements Item {
 			return false;
 		return this.getIsbn() == ((Book)obj).getIsbn();
 	}
+
+    // ######## mock database #########
+    private static Book[] allBooks = new Book[]{
+            new Book("1", "Harry Potter and the Philosopher's Stone", 800),
+            new Book("2", "Harry Potter and the Chamber of Secrets", 800),
+            new Book("3", "Harry Potter and the Prisoner of Azkaban", 800),
+            new Book("4", "Harry Potter and the Goblet of Fire", 800),
+            new Book("5", "Harry Potter and the Order of the Phoenix", 800),
+            new Book("42", "The Hitchhiker's Guide to the Galaxy", 600)
+        };
+
+    public static Book[] getAll() {
+        return allBooks;
+    }
+
+    public static Book getByIsbn(String isbn) {
+        for(Book b : allBooks) {
+            if(b.getIsbn() == isbn) return b;
+        }
+        return null;
+    }
 }

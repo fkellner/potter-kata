@@ -14,43 +14,36 @@ import org.junit.Test;
  */
 public class ShoppingBasketTest 
 {
-    private Book[] availableBooks = new Book[]{
-        new Book("1", "Harry Potter and the Philosopher's Stone", 800),
-        new Book("2", "Harry Potter and the Chamber of Secrets", 800),
-        new Book("3", "Harry Potter and the Prisoner of Azkaban", 800),
-        new Book("4", "Harry Potter and the Goblet of Fire", 800),
-        new Book("5", "Harry Potter and the Order of the Phoenix", 800)
-    };
     /**
      * Test simple Offer logic
      */
     @Test
     public void basicDiscounts() {
-        ShoppingBasket basket = new ShoppingBasket(Arrays.asList(availableBooks[0]));
+        ShoppingBasket basket = new ShoppingBasket(Arrays.asList(Book.getByIsbn("1")));
 
         assertEquals("1 Book: No Discount", 800, basket.getPriceInCents() );
 
-        basket.addItem(availableBooks[1]);
+        basket.addItem(Book.getByIsbn("2"));
         assertEquals("2 Books: 5% Discount", 1600 - 80, basket.getPriceInCents() );
 
-        basket.addItem(availableBooks[2]);
+        basket.addItem(Book.getByIsbn("3"));
         assertEquals("3 Books: 10% Discount", 2400 - 240, basket.getPriceInCents() );
 
-        basket.addItem(availableBooks[3]);
+        basket.addItem(Book.getByIsbn("4"));
         assertEquals("4 Books: 20% Discount", 3200 - 640, basket.getPriceInCents() );
 
-        basket.addItem(availableBooks[4]);
+        basket.addItem(Book.getByIsbn("5"));
         assertEquals("5 Books: 25% Discount", 4000 - 1000, basket.getPriceInCents() );
     }
 
     @Test
     public void givenExample() {
         ShoppingBasket basket = new ShoppingBasket(Arrays.asList(
-            availableBooks[0], availableBooks[0],
-            availableBooks[1], availableBooks[1],
-            availableBooks[2], availableBooks[2],
-            availableBooks[3],
-            availableBooks[4]
+            Book.getByIsbn("1"), Book.getByIsbn("1"),
+            Book.getByIsbn("2"), Book.getByIsbn("2"),
+            Book.getByIsbn("3"), Book.getByIsbn("3"),
+            Book.getByIsbn("4"),
+            Book.getByIsbn("5")
         ));
 
         assertEquals("Test example: Two sets of four are best", (3200 - 640) * 2, basket.getPriceInCents() );
@@ -62,6 +55,7 @@ public class ShoppingBasketTest
         // generate random basket distributions
         final int NUM_TRIES = 100000;
         final int MAX_BASKETS = 16;
+        Book[] availableBooks = Book.getAll();
 
         long start = System.currentTimeMillis();
         for(int i = 0; i < NUM_TRIES; i++) {
