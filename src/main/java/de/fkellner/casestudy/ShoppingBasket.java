@@ -16,10 +16,8 @@ public class ShoppingBasket {
     }
 
     public int getPriceInCents() {
-        // create a copy for modification
-        List<Item> currentItems = new LinkedList<Item>(items);
         // apply transformations by offer
-        currentItems = Offer.apply(currentItems); 
+        List<Item> currentItems = Offer.apply(items); 
         // sum up
         int sum = 0;
         for(Item item: currentItems) {
@@ -31,6 +29,15 @@ public class ShoppingBasket {
 
     public void addItem(Item item) {
         this.items.add(item);
+    }
+
+    public List<Item> getItems() {
+        return Offer.apply(items);
+    }
+
+    @Override
+    public String toString() {
+        return "Shopping Basket with " + getItems().size() + " items worth " + (getPriceInCents() / 100) + "€"; 
     }
 
 }

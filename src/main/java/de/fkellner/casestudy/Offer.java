@@ -37,34 +37,42 @@ public class Offer implements Item {
     }
 
     public int getPriceInCents() {
-        float discount = 0;
-        switch(books.size()) {
-            case 0:
-            case 1:
-                break;
-            case 2:
-                discount = 0.05f;
-                break;
-            case 3:
-                discount = 0.10f;
-                break;
-            case 4:
-                discount = 0.20f;
-                break;
-            case 5:
-            default: // if there are more books...
-                discount = 0.25f;
-                break;
-        }
+        float discount = getDiscount();
         int price = 0;
         for(Book book: books) {
             price += book.getPriceInCents();
         }
-        return (int)Math.ceil(price * (1.0f - discount));
+        return (int)(price * (1.0f - discount));
+    }
+
+    public float getDiscount() {
+        switch(books.size()) {
+            case 0:
+            case 1:
+                return 0.0f;
+            case 2:
+                return 0.05f;
+            case 3:
+                return 0.10f;
+            case 4:
+                return 0.20f;
+            case 5:
+            default: // if there are more books...
+                return 0.25f;
+        }
     }
 
     public int getSize() {
         return books.size();
+    }
+
+    @Override
+    public String toString() {
+        String desc = "" + (getDiscount() * 100) + "% discount: only " + (getPriceInCents() / 100) + "€";
+        for(Book book: books) {
+            desc += "\n    " + book;
+        }
+        return desc;
     }
 
     public static List<Item> apply(List<Item> items) {

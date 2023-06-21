@@ -54,7 +54,7 @@
           <configuration>
               <archive>
                   <manifest>
-                      <mainClass>de.fkellner.casestudy.App</mainClass>
+                      <mainClass>de.fkellner.casestudy.CommandLineShop</mainClass>
                   </manifest>
               </archive>
           </configuration>

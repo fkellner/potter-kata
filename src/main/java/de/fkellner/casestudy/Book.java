@@ -39,6 +39,11 @@ public class Book implements Item {
 		return this.getIsbn() == ((Book)obj).getIsbn();
 	}
 
+    @Override
+    public String toString() {
+        return "ISBN " + isbn + ": " + title + " (" + (priceInCents / 100) + "€)";
+    }
+
     // ######## mock database #########
     private static Book[] allBooks = new Book[]{
             new Book("1", "Harry Potter and the Philosopher's Stone", 800),
@@ -55,7 +60,7 @@ public class Book implements Item {
 
     public static Book getByIsbn(String isbn) {
         for(Book b : allBooks) {
-            if(b.getIsbn() == isbn) return b;
+            if(b.getIsbn().equals(isbn)) return b;
         }
         return null;
     }
