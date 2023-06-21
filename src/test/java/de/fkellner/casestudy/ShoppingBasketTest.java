@@ -59,8 +59,8 @@ public class ShoppingBasketTest
     @Test
     public void fuzzer() {
         // generate random basket distributions
-        final int NUM_TRIES = 100;
-        final int MAX_BASKETS = 6;
+        final int NUM_TRIES = 10000;
+        final int MAX_BASKETS = 8;
 
         for(int i = 0; i < NUM_TRIES; i++) {
             int numBaskets = (int) Math.ceil(Math.random() * MAX_BASKETS);

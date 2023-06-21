@@ -1,9 +1,11 @@
 package de.fkellner.casestudy;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ShoppingBasket {
     private List<Book> books;
@@ -27,33 +29,75 @@ public class ShoppingBasket {
         for(int v : amounts.values()) {
             if (v > minSets) minSets = v;
         }
-        Offer[] sets = new Offer[minSets];
-        for(int i = 0; i < sets.length; i++) {
-            sets[i] = new Offer();
+
+        int[] sets = new int[minSets];
+        for(int i = 0; i < minSets; i++) {
+            sets[i] = 0;
         }
-        // distribute books evenly among sets
-        List<Book> remainingBooks = new LinkedList<Book>(books);
-        while(remainingBooks.size() > 0) {
+        // brute-force this recursively
+        Integer[] counts = amounts.values().toArray(new Integer[]{});
+        int[] c = new int[counts.length];
+        for(int i = 0; i < c.length; i++) {
+            c[i] = counts[i];
+        }
+        return bestPrice(sets, 0, 0, c);
+
+    }
+    private int bestPrice(int[] sets, int pos, int leftEls, int[] amounts) {
+        if(leftEls == 0 && amounts.length == 0) {
+            // we are done, calculate price
+            int sum = 0;
             for(int i = 0; i < sets.length; i++) {
-                if(remainingBooks.size() == 0) break;
-                Offer set = sets[i];
-                for(int j = 0; j < remainingBooks.size(); j++) {
-                    if(set.addBook(remainingBooks.get(j))) {
-                        remainingBooks.remove(j);
-                        break;
-                    }
-                }
+                sum += getDiscountedPrice(sets[i]);
             }
+            return sum;
         }
-        // calculate price        
-        int sum = 0;
-        String[] sizes = new String[sets.length];
-        for(int i = 0; i < sets.length; i++) {
-            sizes[i] = sets[i].getSize() + "";
-            sum += sets[i].getPriceInCents();
+        if(leftEls == 0) {
+            // take one element, leave rest
+            int curr = amounts[0];
+            int[] remaining = new int[amounts.length - 1];
+            for(int i = 0; i < remaining.length; i++) {
+                remaining[i] = amounts[i + 1];
+            }
+            return bestPrice(sets, 0, curr, remaining);
         }
-        System.out.println("Distribution: " + String.join(",", sizes));
-        return sum;
+        leftEls--;
+        int best = Integer.MAX_VALUE;        
+        // try all possibilities to distribute it
+        for(int i = pos; i < sets.length - leftEls; i++) {
+            int[] newSet = new int[sets.length];
+            for(int s = 0; s < sets.length; s++) {
+                newSet[s] = sets[s];
+            }
+            newSet[i]++;
+            int price = bestPrice(newSet, i + 1, leftEls, amounts);
+            if(price < best) best = price;
+        }
+        return best;
+    }
+
+    private static int getDiscountedPrice(int numBooks) {
+        int pricePerBook = 800;
+        float discount = 0;
+        switch(numBooks) {
+            case 0:
+            case 1:
+                break;
+            case 2:
+                discount = 0.05f;
+                break;
+            case 3:
+                discount = 0.10f;
+                break;
+            case 4: 
+                discount = 0.20f;
+                break;
+            case 5:
+            default:
+                discount = 0.25f;
+                break;
+        }
+        return (int) Math.ceil((1.0f - discount) * numBooks * pricePerBook);
     }
 
     public void addBook(Book book) {
