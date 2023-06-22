@@ -14,7 +14,7 @@ To try out the command line shop, you can compile it and run it:
 ```sh
 mvn package
 cd target
-java -jar java -jar potter-kata-1.0-SNAPSHOT.jar
+java -jar potter-kata-1.0-SNAPSHOT.jar
 ```
 
 ## Data Model
