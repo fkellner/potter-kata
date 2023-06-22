@@ -21,6 +21,10 @@ public class ShoppingBasketTest
     public void basicDiscounts() {
         ShoppingBasket basket = new ShoppingBasket(Arrays.asList(Book.getByIsbn("1")));
 
+        // the choice is between removing the "magic number" of the book prices
+        // (so you can change the book prices and it will still work) and
+        // not reimplementing the price calculation logic which is being tested
+        // I chose the latter, but am open to discussing it
         assertEquals("1 Book: No Discount", 800, basket.getPriceInCents() );
 
         basket.addItem(Book.getByIsbn("2"));
@@ -48,6 +52,12 @@ public class ShoppingBasketTest
 
         assertEquals("Test example: Two sets of four are best", (3200 - 640) * 2, basket.getPriceInCents() );
 
+    }
+
+    @Test
+    public void emptyBasket() {
+        ShoppingBasket basket = new ShoppingBasket();
+        assertEquals("An empty shopping basket does not cost anything", 0, basket.getPriceInCents() );
     }
 
     @Test
